@@ -63,14 +63,16 @@
             @endif
 
             <!-- Save Button -->
-            @if (!$isView)
+            @unless($isView)
             <div class="mt-4">
-                <x-button>Save</x-button>
+                <x-button>
+                    {{ $isEdit ? 'Update' : 'Create' }}
+                </x-button>
                 <div wire:loading>
                     <x-loading-spinner />
                 </div>
             </div>
-            @endif
+            @endunless
         </form>
     </div>
 </div>

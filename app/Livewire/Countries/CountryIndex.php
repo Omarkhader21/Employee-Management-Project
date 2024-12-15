@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Livewire\Users;
+namespace App\Livewire\Countries;
 
-use App\Models\User;
+use App\Models\Country;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 
-class UserIndex extends Component
+class CountryIndex extends Component
 {
     use WithPagination;
 
@@ -29,30 +29,28 @@ class UserIndex extends Component
     // New method to encapsulate search filters
     private function applySearchFilters($query)
     {
-        if (strlen($this->search) >= 3) {
+        if (strlen($this->search) >= 2) {
             $query->where(function ($subQuery) {
-                $subQuery->where('username', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%')
-                    ->orWhere('first_name', 'like', '%' . $this->search . '%')
-                    ->orWhere('last_name', 'like', '%' . $this->search . '%');
+                $subQuery->where('country_code', 'like', '%' . $this->search . '%')
+                    ->orWhere('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('region', 'like', '%' . $this->search . '%')
+                    ->orWhere('phone_code', 'like', '%' . $this->search . '%');
             });
         }
     }
 
     #[Layout('layouts.app')]
-    #[On('update-user-list')]
+    #[On('update-country-list')]
     public function render()
     {
-        // Base query for fetching users
-        $query = User::query()
-            ->select('id', 'username', 'first_name', 'last_name', 'email');
-
+        // Base query for fetching countries
+        $query = Country::query()
+            ->select('id', 'country_code', 'name', 'region', 'phone_code');
         // Apply search filters
         $this->applySearchFilters($query);
 
-        // Return the view with users and handle pagination
-        return view('livewire.users.user-index', [
-            'users' => $query->paginate($this->perPage),
+        return view('livewire.countries.country-index', [
+            'countries' => $query->paginate($this->perPage),
         ]);
     }
 
