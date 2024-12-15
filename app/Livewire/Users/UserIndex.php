@@ -4,8 +4,10 @@ namespace App\Livewire\Users;
 
 use App\Models\User;
 use Livewire\Component;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
 
 class UserIndex extends Component
 {
@@ -24,31 +26,40 @@ class UserIndex extends Component
         // Any setup needed on initial load
     }
 
+    // New method to encapsulate search filters
+    private function applySearchFilters($query)
+    {
+        if (strlen($this->search) >= 3) {
+            $query->where(function ($subQuery) {
+                $subQuery->where('username', 'like', '%' . $this->search . '%')
+                    ->orWhere('email', 'like', '%' . $this->search . '%')
+                    ->orWhere('first_name', 'like', '%' . $this->search . '%')
+                    ->orWhere('last_name', 'like', '%' . $this->search . '%');
+            });
+        }
+    }
+
+    #[Layout('layouts.app')]
+    #[On('update-user-list')]
     public function render()
     {
         // Base query for fetching users
         $query = User::query()
-            ->select('id', 'username', 'first_name', 'last_name', 'email')
-            ->when(strlen($this->search) > 3, function ($query) {
-                // Optimized search query with condition
-                return $query->where(function ($query) {
-                    $query->where('username', 'like', '%' . $this->search . '%')
-                        ->orWhere('email', 'like', '%' . $this->search . '%')
-                        ->orWhere('first_name', 'like', '%' . $this->search . '%')
-                        ->orWhere('last_name', 'like', '%' . $this->search . '%');
-                });
-            });
+            ->select('id', 'username', 'first_name', 'last_name', 'email');
+
+        // Apply search filters
+        $this->applySearchFilters($query);
 
         // Return the view with users and handle pagination
         return view('livewire.users.user-index', [
             'users' => $query->paginate($this->perPage),
-        ])->layout('layouts.app');
+        ]);
     }
 
     // Method to clear the search filter
     public function clearSearch()
     {
-        $this->search = '';
+        $this->query = '';
         $this->resetPage();  // Reset pagination to the first page
     }
 }

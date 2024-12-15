@@ -13,19 +13,13 @@
                     <!-- Search Bar -->
                     <input wire:model.live="search" type="text" placeholder="Search users..."
                         class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
-
                     <div wire:loading class="ml-2 text-gray-500">
-                        <svg class="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                            </circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                        </svg>
+                        <x-loading-spinner />
                     </div>
                 </div>
 
                 <!-- Add New User Button -->
-                <button
+                <button wire:click="$dispatch('openModal', { component: 'users.user-modal'})"
                     class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
                     Add New User
                 </button>
@@ -56,17 +50,21 @@
                         <td class="border-b border-gray-200 px-4 py-3 text-sm text-gray-600">{{ $user->last_name }}</td>
                         <td class="border-b border-gray-200 px-4 py-3 text-center">
                             <button
+                                wire:click="$dispatch('openModal', {component: 'users.user-modal', arguments: {userId: {{ $user->id }}, isView: {{true}}}})"
                                 class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out">
                                 View
                             </button>
                             <button
+                                wire:click="$dispatch('openModal', {component: 'users.user-modal', arguments: {userId: {{ $user->id }}, isEdit: {{true}}}})"
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out">
                                 Edit
                             </button>
                             <button
+                                wire:click="$dispatch('openModal', { component: 'users.delete-user-modal', arguments: { userId: {{ $user->id }} } })"
                                 class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out">
                                 Delete
                             </button>
+
                         </td>
                     </tr>
                     @empty
@@ -82,7 +80,7 @@
                     <tr>
                         <td colspan="6" class="px-4 py-2 text-center">
                             <!-- Livewire pagination links -->
-                            {{ $users->links('pagination::tailwind') }}
+                            {{ $users->links('vendor.livewire.tailwind') }}
                         </td>
                     </tr>
                 </tfoot>
