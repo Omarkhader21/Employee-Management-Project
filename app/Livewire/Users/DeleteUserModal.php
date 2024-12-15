@@ -34,7 +34,6 @@ class DeleteUserModal extends ModalComponent
 
         // Close the modal after deletion
         $this->closeModal();
-        $this->dispatch('update-user-list');
     }
 
     public function render()
