@@ -4,7 +4,6 @@ namespace App\Livewire\Users;
 
 use App\Models\User;
 use Illuminate\Validation\Rule;
-use Livewire\Attributes\On;
 use Livewire\Component;
 use LivewireUI\Modal\ModalComponent;
 
@@ -24,7 +23,7 @@ class UserModal extends ModalComponent
             'state.email' => [
                 'required',
                 'email',
-                Rule::unique('users', 'email')->ignore($this->state['id'] ?? null),
+                Rule::unique('users', 'email')->ignore($this->userId ?? null),
             ],
             'state.password' => $this->isEdit ? 'nullable|string|min:8|confirmed' : 'required|string|min:8|confirmed',
             'state.password_confirmation' => $this->isEdit ? 'nullable|string|min:8' : 'required|string|min:8',
@@ -45,20 +44,13 @@ class UserModal extends ModalComponent
 
     public function mount(?int $userId = null, bool $isView = false, bool $isEdit = false)
     {
-        // Assign passed arguments
         $this->userId = $userId;
         $this->isView = $isView;
         $this->isEdit = $isEdit;
 
         if ($this->userId) {
             $user = User::findOrFail($this->userId);
-            $this->state = [
-                'id' => $user->id,
-                'username' => $user->username,
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'email' => $user->email,
-            ];
+            $this->state = $user->only(['id', 'username', 'first_name', 'last_name', 'email']); // Cleaner assignment
         }
     }
 
@@ -72,14 +64,14 @@ class UserModal extends ModalComponent
 
         if ($this->isEdit) {
             $user = User::findOrFail($this->state['id']);
-            $user->update([
-                'username' => $this->state['username'],
-                'first_name' => $this->state['first_name'],
-                'last_name' => $this->state['last_name'],
-                'email' => $this->state['email'],
-            ]);
+            $changes = $this->detectChanges($user);
 
-            flash()->success('User updated successfully!');
+            if ($changes) {
+                $user->update($changes);
+                flash()->success('User updated successfully!');
+            } else {
+                flash()->info('No changes detected.');
+            }
         } else {
             User::create([
                 'username' => $this->state['username'],
@@ -94,6 +86,26 @@ class UserModal extends ModalComponent
 
         $this->closeModal();
         $this->dispatch('update-user-list');
+    }
+
+    // Helper function to detect changes between original and updated user data
+    private function detectChanges(User $user)
+    {
+        $changes = [];
+
+        // Loop through state and detect changes
+        foreach (['username', 'first_name', 'last_name', 'email'] as $field) {
+            if ($user->$field !== $this->state[$field]) {
+                $changes[$field] = $this->state[$field];
+            }
+        }
+
+        // Check if password is provided and is different from the current one
+        if (!empty($this->state['password']) && bcrypt($this->state['password']) !== $user->password) {
+            $changes['password'] = bcrypt($this->state['password']);
+        }
+
+        return $changes;
     }
 
     public function render()
