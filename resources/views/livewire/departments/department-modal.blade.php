@@ -1,50 +1,50 @@
 <div class="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
     <div class="p-6">
         <form wire:submit.prevent="save">
-            <!-- State ID -->
+            <!-- Parent Department -->
             <div class="mb-4">
-                <x-label for="state_id" value="State" class="dark:text-gray-200" />
-                <select id="state_id" wire:model="city.state_id" :disabled="$isView"
+                <x-label for="parent_id" value="Parent Department" class="dark:text-gray-200" />
+                <select id="parent_id" wire:model="department.parent_id" :disabled="$isView"
                     class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded-md shadow-sm">
-                    <option value="">Select State</option>
-                    @foreach ($states as $state)
-                        <option value="{{ $state->id }}">{{ $state->name }}</option>
+                    <option value="">No Parent</option>
+                    @foreach ($departments as $dept)
+                        <option value="{{ $dept->id }}">{{ $dept->name }}</option>
                     @endforeach
                 </select>
-                @error('city.state_id')
+                @error('department.parent_id')
                     <span class="text-red-500 text-sm dark:text-red-400 mt-1">{{ $message }}</span>
                 @enderror
             </div>
 
             <!-- Name -->
-            <div class="mt-4">
-                <x-label for="name" value="Name" class="dark:text-gray-200" />
+            <div class="mb-4">
+                <x-label for="name" value="Department Name" class="dark:text-gray-200" />
                 <x-input id="name" type="text"
                     class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    wire:model="city.name" :disabled="$isView" />
-                @error('city.name')
+                    wire:model="department.name" :disabled="$isView" />
+                @error('department.name')
                     <span class="text-red-500 text-sm dark:text-red-400">{{ $message }}</span>
                 @enderror
             </div>
 
-            <!-- Postal Code -->
-            <div class="mt-4">
-                <x-label for="postal_code" value="Postal Code" class="dark:text-gray-200" />
-                <x-input id="postal_code" type="text"
+            <!-- Code -->
+            <div class="mb-4">
+                <x-label for="code" value="Department Code" class="dark:text-gray-200" />
+                <x-input id="code" type="text"
                     class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    wire:model="city.postal_code" :disabled="$isView" />
-                @error('city.postal_code')
+                    wire:model="department.code" :disabled="$isView" />
+                @error('department.code')
                     <span class="text-red-500 text-sm dark:text-red-400">{{ $message }}</span>
                 @enderror
             </div>
 
-            <!-- Population -->
-            <div class="mt-4">
-                <x-label for="population" value="Population" class="dark:text-gray-200" />
-                <x-input id="population" type="number"
-                    class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    wire:model="city.population" :disabled="$isView" />
-                @error('city.population')
+            <!-- Description -->
+            <div class="mb-4">
+                <x-label for="description" value="Description" class="dark:text-gray-200" />
+                <textarea id="description"
+                    class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded-md shadow-sm"
+                    wire:model="department.description" :disabled="$isView"></textarea>
+                @error('department.description')
                     <span class="text-red-500 text-sm dark:text-red-400">{{ $message }}</span>
                 @enderror
             </div>

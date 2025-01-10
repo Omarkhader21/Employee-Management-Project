@@ -6,6 +6,7 @@ use App\Models\City;
 use App\Models\State;
 use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 
@@ -14,7 +15,9 @@ class CityIndex extends Component
     use WithPagination;
 
     public $state_id;
-    public $search = '';
+    // Ensure the search term is always a string, for easier handling
+    #[Url(as: 'q')]
+    public ?string $search = '';
     public $sortField = 'name';
     public $sortDirection = 'asc';
     public $perPage = 10;
@@ -29,7 +32,7 @@ class CityIndex extends Component
 
     public function mount()
     {
-        $this->states = State::all();
+        $this->states = State::query()->select('id', 'name')->get();
     }
 
     public function updatingSearch()

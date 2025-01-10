@@ -41,7 +41,7 @@ class StateModal extends ModalComponent
         $this->stateId = $stateId;
         $this->isView = $isView;
         $this->isEdit = $isEdit;
-        $this->countries = Country::all();
+        $this->countries = Country::query()->select('id', 'name')->get();
 
         // Initialize state data if stateId is provided
         if ($this->stateId) {

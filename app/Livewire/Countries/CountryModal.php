@@ -41,30 +41,31 @@ class CountryModal extends ModalComponent
 
         if ($this->countryId) {
             $country = Country::findOrFail($this->countryId);
-            $this->state = $country->toArray();  // Leverage Eloquent's toArray() method for simplicity
+            $this->state = $country->toArray();
         }
     }
 
     public function save()
     {
         if ($this->isView) {
-            return; // Prevent saving in view mode
+            return;
         }
 
         $this->validate();
 
         if ($this->isEdit) {
-            $country = Country::findOrFail($this->state['id']);
+            $country = Country::findOrFail($this->countryId);
+
+            // Detect changes
             $changes = $this->detectChanges($country);
 
-            if ($changes) {
+            if (!empty($changes)) {
                 $country->update($changes);
                 flash()->success('Country updated successfully!');
             } else {
                 flash()->info('No changes detected.');
             }
         } else {
-            // Create a new country if not in edit mode
             Country::create($this->state);
             flash()->success('Country created successfully!');
         }
@@ -73,12 +74,10 @@ class CountryModal extends ModalComponent
         $this->dispatch('update-country-list');
     }
 
-    // Helper function to detect changes between original and updated country data
     private function detectChanges(Country $country)
     {
         $changes = [];
 
-        // Compare only the editable fields
         $editableFields = ['country_code', 'name', 'region', 'phone_code'];
 
         foreach ($editableFields as $field) {
