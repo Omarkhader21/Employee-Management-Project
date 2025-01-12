@@ -36,7 +36,6 @@ class EmployeeModal extends ModalComponent
             'employee.zip_code' => 'required|string|max:20',
             'employee.birthdate' => 'nullable|date',
             'employee.date_hired' => 'nullable|date',
-            Rule::unique('cities')->whereNull('deleted_at'), // Exclude soft-deleted users
         ];
     }
 

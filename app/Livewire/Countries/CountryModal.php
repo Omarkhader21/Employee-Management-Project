@@ -21,7 +21,6 @@ class CountryModal extends ModalComponent
             'state.name' => 'required|string|max:100|unique:countries,name,' . ($this->countryId ?? 'NULL'),
             'state.region' => 'nullable|string|max:50',
             'state.phone_code' => 'nullable|string|max:10',
-            Rule::unique('cities')->whereNull('deleted_at'), // Exclude soft-deleted users
         ];
     }
 

@@ -23,7 +23,6 @@ class StateModal extends ModalComponent
             'state.name' => 'required|string|max:255',
             'state.abbreviation' => 'required|string|max:10',
             'state.state_code' => 'required|string|max:10',
-            Rule::unique('cities')->whereNull('deleted_at'), // Exclude soft-deleted users
         ];
     }
 
