@@ -8,6 +8,7 @@ use App\Models\State;
 use App\Models\Country;
 use App\Models\Employee;
 use App\Models\Department;
+use Illuminate\Validation\Rule;
 use LivewireUI\Modal\ModalComponent;
 
 class EmployeeModal extends ModalComponent
@@ -35,6 +36,7 @@ class EmployeeModal extends ModalComponent
             'employee.zip_code' => 'required|string|max:20',
             'employee.birthdate' => 'nullable|date',
             'employee.date_hired' => 'nullable|date',
+            Rule::unique('cities')->whereNull('deleted_at'), // Exclude soft-deleted users
         ];
     }
 

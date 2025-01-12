@@ -2,8 +2,9 @@
 
 namespace App\Livewire\Departments;
 
-use App\Models\Department;
 use Livewire\Component;
+use App\Models\Department;
+use Illuminate\Validation\Rule;
 use LivewireUI\Modal\ModalComponent;
 
 class DepartmentModal extends ModalComponent
@@ -21,6 +22,7 @@ class DepartmentModal extends ModalComponent
             'department.code' => 'required|string|max:20',
             'department.parent_id' => 'nullable|exists:departments,id',
             'department.description' => 'nullable|string',
+            Rule::unique('departments')->whereNull('deleted_at'), // Exclude soft-deleted users
         ];
     }
 

@@ -23,7 +23,7 @@ class UserModal extends ModalComponent
             'state.email' => [
                 'required',
                 'email',
-                Rule::unique('users', 'email')->ignore($this->userId ?? null),
+                Rule::unique('users', 'email')->ignore($this->userId ?? null)->whereNull('deleted_at'),
             ],
             'state.password' => $this->isEdit ? 'nullable|string|min:8|confirmed' : 'required|string|min:8|confirmed',
             'state.password_confirmation' => $this->isEdit ? 'nullable|string|min:8' : 'required|string|min:8',

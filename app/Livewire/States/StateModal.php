@@ -5,6 +5,7 @@ namespace App\Livewire\States;
 use App\Models\State;
 use App\Models\Country;
 use Livewire\Component;
+use Illuminate\Validation\Rule;
 use LivewireUI\Modal\ModalComponent;
 
 class StateModal extends ModalComponent
@@ -22,6 +23,7 @@ class StateModal extends ModalComponent
             'state.name' => 'required|string|max:255',
             'state.abbreviation' => 'required|string|max:10',
             'state.state_code' => 'required|string|max:10',
+            Rule::unique('cities')->whereNull('deleted_at'), // Exclude soft-deleted users
         ];
     }
 
